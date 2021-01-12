@@ -1,0 +1,56 @@
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from repo.models import ShopOrder
+from repo.serializers import ShopOrderSerializer
+from repo.filters import OrderFilter
+from rest_framework.filters import OrderingFilter
+import logging
+from .. import filters
+import json
+
+
+log = logging.getLogger(__name__)
+
+
+
+class OrderViewSet(ModelViewSet):
+    queryset = ShopOrder.objects.all()
+    serializer_class = ShopOrderSerializer
+    filterset_class = OrderFilter 
+    filter_backends = (OrderingFilter,)
+    ordering_fields = ('order_date', 'id')
+
+    @action(detail=True, methods=['put'])
+    def bring_back(self, request, pk=None):
+#data {
+#    "in_num": 1
+#    "data": "2020-12-06",
+#    "backup": "无"
+#   }
+      data = request.data
+      bring_object = self.get_object()
+      bring_object.in_num = bring_object.in_num + data.get('in_num')
+
+      if bring_object.in_num > bring_object.num:
+          return Response(status=400, data={"message": "归还的数量不能大于未归还的数量"})
+      if bring_object.in_num == bring_object.num:
+          bring_object.status = "Done"
+
+      # 记录归还信息 
+      if (isinstance(bring_object.bring, dict) and bring_object.bring.get('comebacks')):
+          bring_object.bring['comebacks'].append(data)
+      else:
+          bring_object.bring = {
+            "comebacks": [data]
+          }
+      bring_object.save()
+      return Response()
+
+    @action(detail=True, methods=['get'])
+    def get_comebacks(self, request, pk=None):
+        bring_object = self.get_object()
+        comeback = bring_object.bring
+        return Response(comeback)
+
+
