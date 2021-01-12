@@ -5,20 +5,20 @@ from repo.models import ShopOrder
 from repo.serializers import ShopOrderSerializer
 from repo.filters import OrderFilter
 from rest_framework.filters import OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
+
 import logging
 from .. import filters
 import json
 
-
 log = logging.getLogger(__name__)
-
 
 
 class OrderViewSet(ModelViewSet):
     queryset = ShopOrder.objects.all()
     serializer_class = ShopOrderSerializer
     filterset_class = OrderFilter 
-    filter_backends = (OrderingFilter,)
+    filter_backends = (OrderingFilter, DjangoFilterBackend )
     ordering_fields = ('order_date', 'id')
 
     @action(detail=True, methods=['put'])
