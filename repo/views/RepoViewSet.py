@@ -2,7 +2,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from repo.models import RepoIn, SendOut, ProductRecord, Product
-from repo.serializers import RepoInSerializer, SendOutSerializer, ProductSerializer, ProductNameSerializer
+from repo.serializers import RepoInSerializer, SendOutSerializer, ProductSerializer, ProductNameSerializer, ProductRecordSerializer
 from repo.filters import RepoInFilter, SendOutFilter, ProductFilter
 from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
@@ -47,7 +47,7 @@ class SendOutViewSet(ModelViewSet):
         #        "name": "控笔训练",
         #        "in_num": 1
         #    }],
-        #    "data": "2020-12-06",
+        #    "date": "2020-12-06",
         #    "backup": "无"
         #   }
         data = request.data
@@ -79,7 +79,8 @@ class SendOutViewSet(ModelViewSet):
             p_object = Product.objects.get(product_no=each.get('product_no'))
             p_object.product_num = p_object.product_num + each.get('change_num')
             p_object.save()
-            pr_object = ProductRecord.objects.create(product_no=p_object.product_no, product_name=p_object.product_name, change_num=each.get('change_num'), option='Package',entity=bring_object)
+            pr_object = ProductRecord.objects.create(product_no=p_object.product_no, product_name=p_object.product_name, date=data.get('date'),
+                                                     change_num=each.get('change_num'), option='Package',entity=bring_object)
             pr_ids.append(pr_object.id)
         if pr_ids:
             bring_object.bring['pr_isd'] = pr_ids
@@ -108,6 +109,8 @@ class SendOutViewSet(ModelViewSet):
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     filterset_class = ProductFilter
+    filter_backends = (OrderingFilter, DjangoFilterBackend )
+    ordering_fields = ('order_date', 'id')
 
     def get_serializer_class(self):
         params = self.request.query_params.dict()
@@ -115,3 +118,38 @@ class ProductViewSet(ModelViewSet):
             return ProductNameSerializer
         return ProductSerializer
 
+    @action(detail=True, methods=['put'])
+    def change(self, request, pk=None):
+#       data= {
+#          id: 32,
+#          date: '2021-03-04',
+#          num: 100,
+#          option: 'increase',
+#          remark: '备注'
+#        }
+
+        data = request.data
+        product = self.get_object()
+        if data.get('option') == 'increase':
+            product.product_num = product.product_num + data.get('num')
+            pr_object = ProductRecord.objects.create(product_no=product.product_no, product_name=product.product_name, date=data.get('date'), 
+                                                     change_num=data.get('num'), option='Inrepo', remark=data.get('remark'))
+        else:
+            product.product_num = product.product_num - data.get('num')
+            pr_object = ProductRecord.objects.create(product_no=product.product_no, product_name=product.product_name, date=data.get('date'), 
+                                                     change_num=data.get('num'), option='Sale', remark=data.get('remark'))
+        product.save()
+        return Response()
+
+
+class ProductRecordViewSet(ModelViewSet):
+    queryset = ProductRecord.objects.all()
+    serializer_class = ProductRecordSerializer
+
+
+    @action(detail=False, methods=['get'])
+    def record(self, request):
+        params = request.query_params
+        record_set = ProductRecord.objects.filter(product_no=params.get("product_no")).order_by('-date')[:20]
+        serializer = ProductRecordSerializer(record_set, many=True)
+        return Response(serializer.data)

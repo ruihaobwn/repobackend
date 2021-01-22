@@ -15,8 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from common.views import LoginView, LogoutView
-from rest_framework.authtoken import views
+from common.views import login_view, logout_view 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 
@@ -25,9 +24,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/repo/', include('repo.urls')),
     path('api/v1/common/', include('common.urls')),
-    path('api-token-auth', views.obtain_auth_token),
-    path('api/v1/login', LoginView.as_view()),
-    path('api/v1/logout', LogoutView.as_view()),
+    path('api/v1/login', login_view),
+    path('api/v1/logout', logout_view),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

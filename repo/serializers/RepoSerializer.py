@@ -1,4 +1,4 @@
-from repo.models import RepoIn, SendOut, Product
+from repo.models import RepoIn, SendOut, Product, ProductRecord
 from common.serializers import BaseSerializer
 from rest_framework import serializers
 from repo.serializers import ShopSerializer
@@ -23,7 +23,7 @@ class SendOutSerializer(BaseSerializer):
 class ProductSerializer(BaseSerializer):
     class Meta:
         model = Product
-        fields = ('id', 'product_no', 'product_name', 'product_num')
+        fields = ('id', 'product_no', 'product_name', 'product_num', "date", "remark")
 
 
 class ProductNameSerializer(BaseSerializer):
@@ -31,3 +31,8 @@ class ProductNameSerializer(BaseSerializer):
         model = Product
         fields = ("id", "product_no", "product_name")
 
+
+class ProductRecordSerializer(BaseSerializer):
+    class Meta:
+        model = ProductRecord
+        fields = ("id", "change_num", "date", "option", "remark")
