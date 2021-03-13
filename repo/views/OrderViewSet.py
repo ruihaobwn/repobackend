@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from repo.models import ShopOrder
+from repo.models import ShopOrder, ShopRecord,Shop
 from repo.serializers import ShopOrderSerializer
 from repo.filters import OrderFilter
 from rest_framework.filters import OrderingFilter
@@ -25,7 +25,7 @@ class OrderViewSet(ModelViewSet):
     def bring_back(self, request, pk=None):
 #data {
 #    "in_num": 1
-#    "data": "2020-12-06",
+#    "date": "2020-12-06",
 #    "backup": "无"
 #   }
       data = request.data
@@ -44,7 +44,13 @@ class OrderViewSet(ModelViewSet):
           bring_object.bring = {
             "comebacks": [data]
           }
+      shop = Shop.objects.get(shop_name=bring_object.name)
+      shop.shop_num = shop.shop_num + data.get('in_num')
       bring_object.save()
+      shop.save() 
+      # 记录到库存history中
+      ShopRecord.objects.create(shop_name=shop.shop_name, date=data.get('date'), 
+                                change_num=data.get('in_num'), option='Order', remark=data.get('backup'))
       return Response()
 
     @action(detail=True, methods=['get'])
@@ -53,4 +59,12 @@ class OrderViewSet(ModelViewSet):
         comeback = bring_object.bring
         return Response(comeback)
 
+
+    @action(detail=True, methods=['put'])
+    def change_status(self, request, pk=None):
+        data = request.data
+        bring_object = self.get_object()
+        bring_object.status = data.get('status')
+        bring_object.save()
+        return Response()
 

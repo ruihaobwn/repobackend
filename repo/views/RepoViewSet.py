@@ -110,7 +110,7 @@ class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     filterset_class = ProductFilter
     filter_backends = (OrderingFilter, DjangoFilterBackend )
-    ordering_fields = ('order_date', 'id')
+    ordering_fields = ('id', 'order_no')
 
     def get_serializer_class(self):
         params = self.request.query_params.dict()
@@ -153,3 +153,4 @@ class ProductRecordViewSet(ModelViewSet):
         record_set = ProductRecord.objects.filter(product_no=params.get("product_no")).order_by('-date')[:20]
         serializer = ProductRecordSerializer(record_set, many=True)
         return Response(serializer.data)
+

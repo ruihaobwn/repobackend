@@ -19,7 +19,6 @@ class SendOutSerializer(BaseSerializer):
         fields = ["id", "name", "date", "take", "status", "backup"]
 
 
-                                                                                                                                                                                                                                                          
 class ProductSerializer(BaseSerializer):
     class Meta:
         model = Product
@@ -36,3 +35,4 @@ class ProductRecordSerializer(BaseSerializer):
     class Meta:
         model = ProductRecord
         fields = ("id", "change_num", "date", "option", "remark")
+
