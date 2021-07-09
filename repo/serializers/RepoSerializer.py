@@ -1,38 +1,32 @@
-from repo.models import RepoIn, SendOut, Product, ProductRecord
+from repo.models import SendOut, Product, ProductRecord, SendOutShop, SendRecord
 from common.serializers import BaseSerializer
 from rest_framework import serializers
-from repo.serializers import ShopSerializer
+from repo.serializers import ShopNameSerializer
 
-class RepoInSerializer(BaseSerializer):
-    shop = serializers.CharField(source='shop.shop_name')
-    shop_no = serializers.CharField(source='shop.shop_no')
-    creator_name = serializers.CharField(source='creator.first_name')
+
+class SendOutShopSerializer(BaseSerializer):
+    shop_no = serializers.ReadOnlyField(source='shop.shop_no')
+    shop_name = serializers.ReadOnlyField(source='shop.shop_name')
+
 
     class Meta:
-        model = RepoIn
-        fields = ['id', 'shop_no', 'shop', 'shop_num', 'in_time', 'is_custom', 'creator_name']
+        model = SendOutShop
+        fields = ['out_num', 'in_num', 'option', 'shop_no', 'shop_name']
 
 
 class SendOutSerializer(BaseSerializer):
+    sendoutshops= SendOutShopSerializer(source='sendoutshop_set', many=True, read_only=True)
+
     class Meta:
         model = SendOut
-        fields = ["id", "name", "date", "take", "status", "backup"]
+        fields = ["id", "name", "date", "status", "remark", "sendoutshops"]
 
 
-class ProductSerializer(BaseSerializer):
+class SendRecordSerializer(BaseSerializer):
+    shop_no = serializers.ReadOnlyField(source='shop.shop_no')
+    shop_name = serializers.ReadOnlyField(source='shop.shop_name')
+
     class Meta:
-        model = Product
-        fields = ('id', 'product_no', 'product_name', 'product_num', "date", "remark")
-
-
-class ProductNameSerializer(BaseSerializer):
-    class Meta:
-        model = Product
-        fields = ("id", "product_no", "product_name")
-
-
-class ProductRecordSerializer(BaseSerializer):
-    class Meta:
-        model = ProductRecord
-        fields = ("id", "change_num", "date", "option", "remark")
+        model = SendRecord
+        fields = ['id', 'shop_no', 'shop_name', 'change_num', 'date', 'remark']
 

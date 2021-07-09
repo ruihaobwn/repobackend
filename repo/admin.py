@@ -7,12 +7,6 @@ class ShopAdmin(admin.ModelAdmin):
     list_display = ('shop_no', 'shop_name', 'shop_num')
 
 
-
-@admin.register(models.RepoIn)
-class RepoInAdmin(admin.ModelAdmin):
-    list_display = ('shop', 'creator', 'in_time', 'shop_num')
-
-
 @admin.register(models.SendOut)
 class SendOutAdmin(admin.ModelAdmin):
     list_display=('name', 'date')
@@ -20,7 +14,7 @@ class SendOutAdmin(admin.ModelAdmin):
 
 @admin.register(models.ShopOrder)
 class ShopOrderAdmin(admin.ModelAdmin):
-    list_display=('order_date', 'name', 'material', 'num')
+    list_display=('order_date', 'material', 'num')
 
 
 @admin.register(models.Product)

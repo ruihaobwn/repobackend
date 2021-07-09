@@ -4,8 +4,8 @@ from repo.models import ShopOrder
 
 
 class OrderFilter(filters.FilterSet):
-    name = filters.CharFilter(lookup_expr='icontains')
+    name = filters.CharFilter(field_name='shop__shop_name', lookup_expr='icontains')
 
     class Meta:
         model = ShopOrder
-        fields = ['status', 'name']
+        fields = ['status']

@@ -1,5 +1,6 @@
 from repo.models import Shop, ShopRecord
 from common.serializers import BaseSerializer
+from rest_framework import serializers
 
 
 class ShopSerializer(BaseSerializer):
@@ -15,7 +16,8 @@ class ShopNameSerializer(BaseSerializer):
 
 
 class ShopRecordSerializer(BaseSerializer):
+
     class Meta:
         model = ShopRecord
-        fields = ("id", "shop_name", "change_num", "option", "date", "remark")
+        fields = ("id", 'shop_no', "shop_name", "change_num", "option", "date", 'sign', "remark")
 
