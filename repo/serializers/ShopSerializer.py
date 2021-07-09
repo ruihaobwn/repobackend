@@ -5,7 +5,7 @@ from common.serializers import BaseSerializer
 class ShopSerializer(BaseSerializer):
     class Meta:
         model = Shop
-        fields = ('id', 'shop_no', 'shop_name', 'shop_num')
+        fields = ('id', 'shop_no', 'shop_name', 'shop_num', 'remark')
 
 
 class ShopNameSerializer(BaseSerializer):

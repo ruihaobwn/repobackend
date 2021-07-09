@@ -87,6 +87,14 @@ class SendOutViewSet(ModelViewSet):
 
         bring_object.save()
         return Response()
+
+    def destroy(self, request, *args, **kwargs):
+        delete_object = self.get_object()
+        if delete_object.bring:
+            return Response(status=511, data={"message": "归还不为空，不能删除"})
+        delete_object.delete()
+
+        return Response(status=204, data={'message': '删除成功'})
     
     @action(detail=True, methods=['get'])
     def get_comebacks(self, request, pk=None):

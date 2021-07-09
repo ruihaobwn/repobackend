@@ -75,7 +75,7 @@ REST_FRAMEWORK = {
     ),
 
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 100,
+    'PAGE_SIZE': 1000,
 }
 
 
@@ -99,16 +99,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'repo',
-        'USER': 'repo',
-        'PASSWORD': 'repo',
+        'NAME': os.environ['DATABASE'],
+        'USER': os.environ['USERNAME'],
+        'PASSWORD': os.environ['PASSWORD'],
         'HOST': '127.0.0.1',
         'PORT': '3306',
         'OPTIONS': {
