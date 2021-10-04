@@ -44,6 +44,7 @@ class ShopViewSet(ModelViewSet):
         
         return Response(detail_num)
 
+# 直接入库和售出
     @action(detail=True, methods=['put'])
     def change_num(self, request, pk=None):
 #       data= {
@@ -59,11 +60,13 @@ class ShopViewSet(ModelViewSet):
         if data.get('option') == 'increase':
             shop.shop_num = shop.shop_num + data.get('num')
             sr_object = ShopRecord.objects.create(shop_no=shop.shop_no, shop_name=shop.shop_name, date=data.get('date'), 
-                                                  change_num=data.get('num'), option='Inrepo', remark=data.get('remark'))
+                                                  change_num=data.get('num'), option='Inrepo', remark=data.get('remark'),
+                                                  creator=request.user.last_name)
         else:
             shop.shop_num = shop.shop_num - data.get('num')
             sr_object = ShopRecord.objects.create(shop_no=shop.shop_no, shop_name=shop.shop_name, date=data.get('date'), 
-                                                  change_num=data.get('num'), option='Sale', remark=data.get('remark'))
+                                                  change_num=data.get('num'), option='Sale', remark=data.get('remark'),
+                                                  creator=request.user.last_name)
         shop.save()
         return Response()
 

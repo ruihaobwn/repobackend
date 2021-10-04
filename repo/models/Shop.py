@@ -30,3 +30,4 @@ class ShopRecord(BaseModel):
     date = models.DateTimeField(default=timezone.now, verbose_name="日期")
     remark = models.TextField(verbose_name='备注', null=True, blank=True)   
     sign = models.CharField(verbose_name='时间戳标识', max_length=30, null=True)
+    creator = models.CharField(verbose_name='操作人', max_length=80, null=True)

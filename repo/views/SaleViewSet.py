@@ -52,7 +52,7 @@ class ProductViewSet(ModelViewSet):
             shop.save()
             sr_object = ShopRecord.objects.create(shop_no=shop.shop_no, shop_name=shop.shop_name, date=data.get('saled_date'),
                                                   change_num=change_num, option='Sale', remark=data.get('remark'),
-                                                  sign=round(t*1000000))
+                                                  creator=request.user.last_name, sign=round(t*1000000))
         return Response(status=200)
            
 

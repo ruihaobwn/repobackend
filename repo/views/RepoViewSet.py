@@ -21,6 +21,9 @@ class SendOutViewSet(ModelViewSet):
     filter_backends = (OrderingFilter, DjangoFilterBackend)
     ordering_fields = ('date', 'id')
 
+    def get_queryset(self):
+        return super().get_queryset().distinct()
+
     def create(self, request):
         data = request.data
         take = data.pop('take')

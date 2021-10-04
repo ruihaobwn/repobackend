@@ -19,5 +19,5 @@ class ShopRecordSerializer(BaseSerializer):
 
     class Meta:
         model = ShopRecord
-        fields = ("id", 'shop_no', "shop_name", "change_num", "option", "date", 'sign', "remark")
+        fields = ("id", 'shop_no', 'creator', "shop_name", "change_num", "option", "date", 'sign', "remark")
 
