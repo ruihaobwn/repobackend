@@ -6,7 +6,7 @@ from rest_framework import serializers
 class ShopSerializer(BaseSerializer):
     class Meta:
         model = Shop
-        fields = ('id', 'shop_no', 'shop_name', 'shop_num', 'remark')
+        fields = ('id', 'shop_no','updated_time','shop_name', 'shop_num', 'remark')
 
 
 class ShopNameSerializer(BaseSerializer):
