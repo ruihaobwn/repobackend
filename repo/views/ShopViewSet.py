@@ -36,8 +36,8 @@ class ShopViewSet(ModelViewSet):
         total_in_sum = total_in['in_num__sum'] if total_in['in_num__sum'] else 0
         detail_num['send_num'] = total_out_sum - total_in_sum
 
-        total_order = ShopOrder.objects.filter(shop=shop_object).aggregate(Sum('num'))
-        total_back = ShopOrder.objects.filter(shop=shop_object).aggregate(Sum('in_num'))
+        total_order = ShopOrder.objects.filter(shop=shop_object, status='Process').aggregate(Sum('num'))
+        total_back = ShopOrder.objects.filter(shop=shop_object, status='Process').aggregate(Sum('in_num'))
         total_order_sum = total_order['num__sum'] if total_order['num__sum'] else 0
         total_back_sum = total_back['in_num__sum'] if total_back['in_num__sum'] else 0
         detail_num['order_num'] = total_order_sum - total_back_sum
