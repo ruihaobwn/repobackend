@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'rest_framework.authtoken',
+    'django_crontab',
     'common',
     'repo',
 ]
@@ -137,6 +138,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CRONJOBS = [
+    ('17 15 * * *', 'repo.cron.count_shop'),
+]
+CRONTAB_COMMAND_SUFFIX = '2>&1'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
