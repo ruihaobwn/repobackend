@@ -10,7 +10,7 @@ class Shop(BaseModel):
     total_num = models.IntegerField(verbose_name=u'货品总量', default=0)
     remark = models.TextField(verbose_name='备注', default="", blank=True)
     # 库存阀值，低于该数值预警
-   # threshold = models.IntegerField(verbose_name='阀值', default=0, blank=True)
+    threshold = models.IntegerField(verbose_name='阀值', default=0, blank=True)
     order_no = models.IntegerField(verbose_name="排列顺序", default=100)
 
     class Meta:

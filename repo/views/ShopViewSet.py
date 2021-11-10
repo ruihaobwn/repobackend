@@ -70,6 +70,15 @@ class ShopViewSet(ModelViewSet):
         shop.save()
         return Response()
 
+# 设置预警阀值
+    @action(detail=True, methods=['put'])
+    def set_threshold(self, request, pk=None):
+        data = request.data
+        shop = self.get_object()
+        shop.threshold = data.get('threshold')
+        shop.save()
+        return Response()
+
 
 class ShopRecordViewSet(ModelViewSet):
     queryset = ShopRecord.objects.all()

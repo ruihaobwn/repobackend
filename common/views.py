@@ -21,7 +21,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def current_user(self, request):
         user = request.user
         results = {}
-        results['name'] = user.first_name
+        results['name'] = user.last_name
         results['avatar'] = "https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png"
         return Response(results)
 
@@ -29,7 +29,6 @@ class UserViewSet(viewsets.ModelViewSet):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_view(request):
-    print('1')
     username = request.data['username']
     password = request.data['password']
     user = authenticate(request, username=username, password=password)
