@@ -7,6 +7,7 @@ from repo.filters import OrderFilter
 from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
+from repo.util import sum_shop
 import logging
 from .. import filters
 import json
@@ -26,6 +27,7 @@ class OrderViewSet(ModelViewSet):
         shop_no = data.pop('shop_no')
         shop = Shop.objects.get(shop_no=shop_no)
         ShopOrder.objects.create(shop=shop, order_date=data['order_date'], num=data['num'], material=data.get('material'), remark=data.get('remark'))  
+        sum_shop(shop)
         return Response(status=201)
 
     @action(detail=True, methods=['put'])
@@ -64,7 +66,8 @@ class OrderViewSet(ModelViewSet):
         if delete_object.orderrecord_set.count()>0:
             return Response(status=511, data={"message": "已经有归还数据，请先删除归还数据"})
         delete_object.delete()
-        
+        shop = delete_object.shop
+        sum_shop(shop) 
         return Response(status=204)
 
     def destroy(self, request, *args, **kwargs):
@@ -102,3 +105,4 @@ class OrderRecordViewSet(ModelViewSet):
         delete_object.delete()
         
         return Response(status=204)
+

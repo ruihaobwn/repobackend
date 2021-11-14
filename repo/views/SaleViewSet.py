@@ -6,6 +6,7 @@ from repo.serializers import ProductSerializer, ProductSimpleSerializer, Commodi
 from repo.filters import ProductFilter, CommodityFilter, SaleRecordFilter
 from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from repo.util import sum_shop
 
 import time 
 import logging
@@ -50,14 +51,15 @@ class ProductViewSet(ModelViewSet):
             change_num = saled_num * item.get('num')
             shop.shop_num -= saled_num * item.get('num')
             shop.save()
+            sum_shop(shop)
             sr_object = ShopRecord.objects.create(shop_no=shop.shop_no, shop_name=shop.shop_name, date=data.get('saled_date'),
                                                   change_num=change_num, option='Sale', remark=data.get('remark'),
                                                   creator=request.user.last_name, sign=round(t*1000000))
         return Response(status=200)
-           
 
 
 class CommodityViewSet(ModelViewSet):
+    # 暂时没用
     queryset = Commodity.objects.all()
     serializer_class = CommoditySerializer
     filterset_class = CommodityFilter
@@ -127,7 +129,8 @@ class SaleRecordViewSet(ModelViewSet):
             shop = Shop.objects.get(shop_no=item.get('no'))
             shop.shop_num += delete_object.saled_num * item.get('num')
             shop.save()
-        sign = delete_object.sign
+            sum_shop(shop)
+#        sign = delete_object.sign
 #        ShopRecord.objects.filter(sign=sign).delete()
         delete_object.delete()
         return Response(status=204)

@@ -8,6 +8,8 @@ from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 import logging
 from .. import filters
+from repo.util import sum_shop
+
 
 log = logging.getLogger(__name__)
 
@@ -41,8 +43,8 @@ class ShopViewSet(ModelViewSet):
         total_order_sum = total_order['num__sum'] if total_order['num__sum'] else 0
         total_back_sum = total_back['in_num__sum'] if total_back['in_num__sum'] else 0
         detail_num['order_num'] = total_order_sum - total_back_sum
-        
         return Response(detail_num)
+
 
 # 直接入库和售出
     @action(detail=True, methods=['put'])
@@ -68,6 +70,7 @@ class ShopViewSet(ModelViewSet):
                                                   change_num=data.get('num'), option='Sale', remark=data.get('remark'),
                                                   creator=request.user.last_name)
         shop.save()
+        sum_shop(shop)
         return Response()
 
 # 设置预警阀值
@@ -95,7 +98,7 @@ class ShopRecordViewSet(ModelViewSet):
         else:
             shop.shop_num -= delete_object.change_num
         shop.save()
+        sum_shop(shop)
         delete_object.delete()
         return Response(status=204)
-
 
