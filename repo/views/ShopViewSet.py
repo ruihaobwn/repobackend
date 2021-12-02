@@ -78,7 +78,9 @@ class ShopViewSet(ModelViewSet):
     def set_threshold(self, request, pk=None):
         data = request.data
         shop = self.get_object()
-        shop.threshold = data.get('threshold')
+        if data.get('threshold'):
+            shop.threshold = data.get('threshold')
+        shop.remark = data.get('remark', '')
         shop.save()
         return Response()
 
