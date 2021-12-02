@@ -70,21 +70,16 @@ class OrderViewSet(ModelViewSet):
         sum_shop(shop) 
         return Response(status=204)
 
-    def destroy(self, request, *args, **kwargs):
-        delete_object = self.get_object()
-        if delete_object.bring:
-            return Response(status=511, data={"message": "已经有归还数据，不能删除"})
-        delete_object.delete()
-        
-        return Response(status=204)
 
-
+# 结清
     @action(detail=True, methods=['put'])
     def change_status(self, request, pk=None):
         data = request.data
         bring_object = self.get_object()
         bring_object.status = data.get('status')
         bring_object.save()
+        shop = bring_object.shop
+        sum_shop(shop)
         return Response()
 
 
