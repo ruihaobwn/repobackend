@@ -41,10 +41,10 @@ class OrderViewSet(ModelViewSet):
       bring_object = self.get_object()
       bring_object.in_num = bring_object.in_num + data.get('in_num')
 
-      if bring_object.in_num > bring_object.num:
-          return Response(status=400, data={"message": "归还的数量不能大于未归还的数量"})
-      if bring_object.in_num == bring_object.num:
-          bring_object.status = "Done"
+#      if bring_object.in_num > bring_object.num:
+#          return Response(status=400, data={"message": "归还的数量不能大于未归还的数量"})
+#      if bring_object.in_num == bring_object.num:
+#          bring_object.status = "Done"
 
       # 记录归还信息 
       OrderRecord.objects.create(order=bring_object, num=data.get('in_num'), date=data.get('date'), remark=data.get('remark'))      
@@ -52,6 +52,7 @@ class OrderViewSet(ModelViewSet):
       shop.shop_num = shop.shop_num + data.get('in_num')
       bring_object.save()
       shop.save() 
+      sum_shop(shop)
       return Response()
 
     @action(detail=True, methods=['get'])
@@ -97,6 +98,7 @@ class OrderRecordViewSet(ModelViewSet):
         shop.shop_num -= delete_object.num
         order.save()
         shop.save()
+        sum_shop(shop)
         delete_object.delete()
         
         return Response(status=204)
