@@ -58,7 +58,7 @@ class SendOutViewSet(ModelViewSet):
             #归还记录
             SendRecord.objects.create(send=bring_object, shop=shop, date=data.get('date'), change_num=each.get('in_num'), remark=data.get('remark'))
             #增加货品库存 文件袋、剪刀、板擦归还不增加库存
-            if shop.shop_no in ['001', '700A', '700B', '123']:
+            if shop.shop_no in ['001', '700A', '700B', '123', '425A', '425B', '425c', '425D', '425F']:
                 pass
             else:
                 shop.shop_num += each.get('in_num')
@@ -115,7 +115,7 @@ class SendRecordViewSet(ModelViewSet):
         except SendOutShop.DoesNotExist:
             pass
         # 减少库存数量 文件袋、剪刀、板擦归还不影响库存
-        if shop.shop_no in ['001', '700A', '700B', '123']:
+        if shop.shop_no in ['001', '700A', '700B', '123', '425A', '425B', '425c', '425D', '425F']:
             pass
         else:
             shop.shop_num -= delete_object.change_num
